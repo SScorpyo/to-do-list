@@ -6,8 +6,9 @@ import InfoCard from "../InfoCard";
 import { useAppDispatch, useAppSelector } from "../../Utils/hooks";
 import { getAllTodos } from "../../Data/slices/todos";
 import { useEffect } from "react";
+import Spinner from "../Spinner";
 
-const TodoList = () => {
+const TodoList: React.FC = () => {
   const infoCardsData = [
     { type: "Active Session", value: "16 minutes", progress: 23.36 },
     { type: "Added", value: "4 items", progress: -9.05 },
@@ -20,31 +21,34 @@ const TodoList = () => {
     dispatch(getAllTodos());
   }, [dispatch]);
 
-  const { data } = useAppSelector((state) => state.todos)
+  const { data, loading } = useAppSelector((state) => state.todos);
 
   return (
-    <div className="todo-container h-screen w-screen bg-slate-800 flex justify-center items-center">
-      <div className="todo-list gap-5 flex flex-col items-center">
-        <div className="w-min">
-          <div className="flex content-center items-center text-white font-medium gap-6 pr-48">
-            <FontAwesomeIcon className="size-32" icon={faSquareCheck} bounce style={{ color: "#00bb64" }} />
-            <p className="text-6xl">Todolist</p>
+    <>
+      <div className="todo-container h-screen w-screen bg-slate-800 flex justify-center items-center">
+        <div className="todo-list gap-5 flex flex-col items-center">
+          <div className="w-min">
+            <div className="flex content-center items-center text-white font-medium gap-6 pr-48">
+              <FontAwesomeIcon className="size-32" icon={faSquareCheck} bounce style={{ color: "#00bb64" }} />
+              <p className="text-6xl">Todolist</p>
+            </div>
+            <AddToDo />
+            <div className="todo-items bg-slate-800 mt-3 mb-6">
+              {data.map((todoItem, index) => (
+                <TodoItem key={index} id={todoItem.id} text={todoItem.text} done={todoItem.done} />
+              ))}
+            </div>
           </div>
-          <AddToDo />
-          <div className="todo-items bg-slate-800 mt-3 mb-6">
-            {data.map((todoItem, index) => (
-              <TodoItem key={index} id = {todoItem.id} text={todoItem.text} done = {todoItem.done} />
+          <hr className="border-2 border-gray-700 w-full" />
+          <div className="info-container flex gap-5 pl-8 pr-8">
+            {infoCardsData.map((infoItem, index) => (
+              <InfoCard key={index} {...infoItem} />
             ))}
           </div>
         </div>
-        <hr className="border-2 border-gray-700 w-full" />
-        <div className="info-container flex gap-5 pl-8 pr-8">
-          {infoCardsData.map((infoItem, index) => (
-            <InfoCard key={index} {...infoItem} />
-          ))}
-        </div>
       </div>
-    </div>
+      {loading && <Spinner />}
+    </>
   );
 };
 export default TodoList;

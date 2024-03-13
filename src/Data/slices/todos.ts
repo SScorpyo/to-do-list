@@ -36,10 +36,11 @@ export const getAllTodos = createAsyncThunk("todos/getAllTodos", async (_, thunk
 
 export const addTodo = createAsyncThunk("todos/addTodo", async (queries: addTodoQueries, thunkAPI) => {
   try {
-    const { error } = await supabase.from("todos").insert([{ text: queries.text }]);
+    const { error } = await supabase.from("todos").insert(queries);
 
     if (!error) {
-      return toast.success("Todo added successfuly");
+      toast.success("Todo added successfuly");
+      return await thunkAPI.dispatch(getAllTodos());
     }
     throw new Error(error.message);
   } catch (err: any) {
@@ -51,7 +52,8 @@ export const setTodoDone = createAsyncThunk("todos/setTodoDone", async (queries:
   try {
     const { error } = await supabase.from("todos").update({ done: true }).eq("id", queries.id);
     if (!error) {
-      return toast.success("Todo updated successfuly");
+      toast.success("Todo updated successfuly");
+      return await thunkAPI.dispatch(getAllTodos());
     }
     throw new Error(error.message);
   } catch (err: any) {
@@ -64,7 +66,8 @@ export const removeTodo = createAsyncThunk("todos/removeTodo", async (queries: r
     const { error } = await supabase.from("todos").delete().eq("id", queries.id);
 
     if (!error) {
-      return toast.success("Todo removed successfuly");
+      toast.success("Todo removed successfuly");
+      return await thunkAPI.dispatch(getAllTodos());
     }
     throw new Error(error.message);
   } catch (err: any) {

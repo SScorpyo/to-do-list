@@ -3,9 +3,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import { toast } from "react-toastify";
 import { useAppDispatch } from "../../Utils/hooks";
-import { addTodo, getAllTodos } from "../../Data/slices/todos";
+import { addTodo } from "../../Data/slices/todos";
 
-const AddToDo = () => {
+const AddToDo: React.FC = () => {
   const dispatch = useAppDispatch();
   const inputRef = React.useRef<HTMLInputElement>(null);
 
@@ -15,7 +15,6 @@ const AddToDo = () => {
       return toast.error("Invalid todo string");
     }
     dispatch(addTodo({ text: todoString }));
-    dispatch(getAllTodos());
   };
 
   return (
